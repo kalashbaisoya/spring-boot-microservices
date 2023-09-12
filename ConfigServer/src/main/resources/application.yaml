@@ -8,7 +8,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/kalashbhai/spring-app-config
+          uri: "https://github.com/kalashbhai/spring-app-config"
           clone-on-start: true
           
 eureka:
