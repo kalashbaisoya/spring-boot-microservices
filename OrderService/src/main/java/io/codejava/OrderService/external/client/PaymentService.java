@@ -11,7 +11,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 
 @CircuitBreaker(name = "external", fallbackMethod = "fallback")
-@FeignClient(name="PAYMENT-SERVICE/payment")
+@FeignClient(name="payment", url = "${microservices.payment}")
 public interface PaymentService {
 
 	@PostMapping

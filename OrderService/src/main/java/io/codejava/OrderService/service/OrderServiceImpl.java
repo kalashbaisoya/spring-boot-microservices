@@ -3,6 +3,7 @@ package io.codejava.OrderService.service;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,7 +34,13 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
+	@Value("${microservices.product}")
+	private String productSericeUrl;
+
+	@Value("${microservices.payment}")
+	private String paymentSericeUrl;
+
 	@Override
 	public Long placeOrder(OrderRequest orderRequest) {
 		
@@ -95,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Invoking Product service to fetch the product for id: {}", order.getProductId());
         ProductResponse productResponse
                 = restTemplate.getForObject(
-                        "http://PRODUCT-SERVICE/product/" + order.getProductId(),
+                        productSericeUrl + order.getProductId(),
                 ProductResponse.class
         );
 
@@ -105,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
         
         PaymentResponse paymentResponse
                 = restTemplate.getForObject(
-                        "http://PAYMENT-SERVICE/payment/order/" + order.getOrderId(),
+                        paymentSericeUrl+"order/" + order.getOrderId(),
                 PaymentResponse.class
                 );
         log.info("Payment response received.");

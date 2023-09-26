@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import io.codejava.OrderService.exception.CustomException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
+//@FeignClient(name="PRODUCT-SERVICE/product")
 @CircuitBreaker(name = "external", fallbackMethod = "fallback")
-@FeignClient(name="PRODUCT-SERVICE/product")
+@FeignClient(name="product", url = "${microservices.product}")
 public interface ProductService {
 
 	@PutMapping("/reduceQty/{id}")

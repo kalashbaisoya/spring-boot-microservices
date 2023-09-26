@@ -13,7 +13,7 @@ public class OrderServiceConfig {
 //	In this case, it overrides the default ServiceInstanceListSupplier
 //	bean with your custom implementation, TestServiceInstanceListSupplier.
 
-    @Bean
+//    @Bean
     public ServiceInstanceListSupplier supplier() {
         return new TestServiceInstanceListSupplier();
     }

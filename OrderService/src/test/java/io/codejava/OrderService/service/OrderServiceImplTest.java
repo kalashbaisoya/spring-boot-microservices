@@ -10,13 +10,16 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import io.codejava.OrderService.entities.Order;
@@ -45,7 +48,19 @@ public class OrderServiceImplTest {
 	
 	@Mock
 	private RestTemplate restTemplate;
-	
+
+    @Value("${microservices.product}")
+    private String productSericeUrl;
+    @Value("${microservices.payment}")
+    private String paymentSericeUrl;
+
+    @BeforeEach
+    public void setup(){
+        ReflectionTestUtils.setField(orderService,"paymentServiceUrl",paymentSericeUrl);
+
+        ReflectionTestUtils.setField(orderService,"productServiceUrl",productSericeUrl);
+    }
+
     @InjectMocks
     OrderService orderService = new OrderServiceImpl();
 	
@@ -58,12 +73,12 @@ public class OrderServiceImplTest {
                 .thenReturn(Optional.of(order));
 
         when(restTemplate.getForObject(
-                "http://PRODUCT-SERVICE/product/" + order.getProductId(),
+                productSericeUrl + order.getProductId(),
                 ProductResponse.class
         )).thenReturn(getMockProductResponse());
 
         when(restTemplate.getForObject(
-                "http://PAYMENT-SERVICE/payment/order/" + order.getOrderId(),
+                paymentSericeUrl+"order/" + order.getOrderId(),
                 PaymentResponse.class
         )).thenReturn(getMockPaymentResponse());
 
@@ -73,10 +88,10 @@ public class OrderServiceImplTest {
         //Verification
         verify(orderRepository, times(1)).findById(anyLong());
         verify(restTemplate, times(1)).getForObject(
-                "http://PRODUCT-SERVICE/product/" + order.getProductId(),
+                productSericeUrl + order.getProductId(),
                 ProductResponse.class);
         verify(restTemplate, times(1)).getForObject(
-                "http://PAYMENT-SERVICE/payment/order/" + order.getOrderId(),
+                paymentSericeUrl+"order/" + order.getOrderId(),
                 PaymentResponse.class);
 
 
