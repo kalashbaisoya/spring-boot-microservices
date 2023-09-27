@@ -16,12 +16,12 @@ spec:
         image: imkalash/configserver
         ports:
         - containerPort: 9296
-        env:
-        - name: EUREKA_SERVER_ADDRESS
-          valueFrom:
-            configMapKeyRef:
-              key: eureka_service_address
-              name: eureka-cm
+        # env:
+        # - name: EUREKA_SERVER_ADDRESS
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       key: eureka_service_address
+        #       name: eureka-cm
 
 ---
 
