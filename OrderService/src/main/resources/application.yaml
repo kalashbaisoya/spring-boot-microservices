@@ -4,7 +4,6 @@ server:
 microservices:
   product: http://product-service-svc/product/
   payment: http://payment-service-svc/payment/
-  order: http://order-service-svc/order/
 
 spring:
   datasource:

@@ -1,7 +1,5 @@
 package io.codejava.OrderService.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -19,7 +17,6 @@ import io.codejava.OrderService.repository.OrderRepository;
 import io.codejava.OrderService.service.OrderService;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,7 +24,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -159,6 +155,7 @@ public class OrderControllerTest {
         //Check Output
 
         OrderRequest orderRequest = getMockOrderRequest();
+        System.err.println("I am here before mvc result");
         MvcResult mvcResult
                 = mockMvc.perform(MockMvcRequestBuilders.post("/order/placeOrder")
                         .with(jwt().authorities(new SimpleGrantedAuthority("Customer")))
@@ -166,7 +163,7 @@ public class OrderControllerTest {
                         .content(objectMapper.writeValueAsString(orderRequest))
                 ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-
+        System.out.println(mvcResult);
         String orderId = mvcResult.getResponse().getContentAsString();
 
         Optional<Order> order = orderRepository.findById(Long.valueOf(orderId));

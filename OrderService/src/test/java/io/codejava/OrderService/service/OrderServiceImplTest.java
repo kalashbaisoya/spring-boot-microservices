@@ -50,20 +50,21 @@ public class OrderServiceImplTest {
 	private RestTemplate restTemplate;
 
     @Value("${microservices.product}")
-    private String productSericeUrl;
+    private String productServiceUrl;
     @Value("${microservices.payment}")
-    private String paymentSericeUrl;
+    private String paymentServiceUrl;
 
-    @BeforeEach
-    public void setup(){
-        ReflectionTestUtils.setField(orderService,"paymentServiceUrl",paymentSericeUrl);
-
-        ReflectionTestUtils.setField(orderService,"productServiceUrl",productSericeUrl);
-    }
 
     @InjectMocks
     OrderService orderService = new OrderServiceImpl();
-	
+
+    @BeforeEach
+    public void setup(){
+        ReflectionTestUtils.setField(orderService,"paymentServiceUrl",paymentServiceUrl);
+
+        ReflectionTestUtils.setField(orderService,"productServiceUrl",productServiceUrl);
+    }
+
     @DisplayName("Get Order - Success Scenario")
     @Test
     void test_When_Order_Success() {
@@ -73,12 +74,12 @@ public class OrderServiceImplTest {
                 .thenReturn(Optional.of(order));
 
         when(restTemplate.getForObject(
-                productSericeUrl + order.getProductId(),
+                productServiceUrl + order.getProductId(),
                 ProductResponse.class
         )).thenReturn(getMockProductResponse());
 
         when(restTemplate.getForObject(
-                paymentSericeUrl+"order/" + order.getOrderId(),
+                paymentServiceUrl+"order/" + order.getOrderId(),
                 PaymentResponse.class
         )).thenReturn(getMockPaymentResponse());
 
@@ -88,10 +89,10 @@ public class OrderServiceImplTest {
         //Verification
         verify(orderRepository, times(1)).findById(anyLong());
         verify(restTemplate, times(1)).getForObject(
-                productSericeUrl + order.getProductId(),
+                productServiceUrl + order.getProductId(),
                 ProductResponse.class);
         verify(restTemplate, times(1)).getForObject(
-                paymentSericeUrl+"order/" + order.getOrderId(),
+                paymentServiceUrl+"order/" + order.getOrderId(),
                 PaymentResponse.class);
 
 

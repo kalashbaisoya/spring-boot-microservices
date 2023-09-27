@@ -29,11 +29,19 @@ public class OrderController {
 	@PreAuthorize("hasAuthority('Customer')")
 	@PostMapping("/placeOrder")
 	public ResponseEntity<Long> placeOrder(@RequestBody OrderRequest orderRequest) {
-		
-		Long id = orderService.placeOrder(orderRequest);
-		log.info("Order Id: {}",id);
-		
-		return new ResponseEntity<>(id,HttpStatus.OK);
+
+		try {
+			log.info("Received placeOrder request: {}", orderRequest);
+
+			Long id = orderService.placeOrder(orderRequest);
+
+			log.info("Order Id: {}", id);
+
+			return new ResponseEntity<>(id, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("Error in placeOrder:", e);
+			throw e; // Rethrow the exception for debugging
+		}
 		
 	}
 	

@@ -29,15 +29,13 @@ spring:
 #  client:
 #    enabled: false
     
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        security: DEBUG
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 microservices:
   product: http://product-service-svc/product/
   payment: http://payment-service-svc/payment/
-  order: http://order-service-svc/order/
-
     

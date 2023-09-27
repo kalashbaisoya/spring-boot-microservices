@@ -36,10 +36,10 @@ public class OrderServiceImpl implements OrderService {
 	private RestTemplate restTemplate;
 
 	@Value("${microservices.product}")
-	private String productSericeUrl;
+	private String productServiceUrl;
 
 	@Value("${microservices.payment}")
-	private String paymentSericeUrl;
+	private String paymentServiceUrl;
 
 	@Override
 	public Long placeOrder(OrderRequest orderRequest) {
@@ -92,6 +92,8 @@ public class OrderServiceImpl implements OrderService {
 	public OrderResponse getOrderDetailsByOrderId(long orderId) {
 		
 		log.info("Get order details for Order Id : {}", orderId);
+		log.info("ProductServiceUrl: {}",productServiceUrl);
+		log.info("PaymentServiceUrl: {}",paymentServiceUrl);
 
         Order order
                 = orderRepository.findById(orderId)
@@ -102,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Invoking Product service to fetch the product for id: {}", order.getProductId());
         ProductResponse productResponse
                 = restTemplate.getForObject(
-                        productSericeUrl + order.getProductId(),
+                        productServiceUrl + order.getProductId(),
                 ProductResponse.class
         );
 
@@ -112,10 +114,10 @@ public class OrderServiceImpl implements OrderService {
         
         PaymentResponse paymentResponse
                 = restTemplate.getForObject(
-                        paymentSericeUrl+"order/" + order.getOrderId(),
+                        paymentServiceUrl+"order/" + order.getOrderId(),
                 PaymentResponse.class
                 );
-        log.info("Payment response received.");
+        log.info("Payment response received : {}.",paymentResponse);
         OrderResponse.ProductDetails productDetails
                 = OrderResponse.ProductDetails
                 .builder()
