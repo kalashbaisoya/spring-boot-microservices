@@ -67,7 +67,7 @@ public class OrderControllerTest {
     @Autowired
     private CircuitBreakerRegistry circuitBreakerRegistry;
 
-    
+    private final CustomLogger customLogger = new CustomLogger();
 //	to configure and interact with the WireMock server, we use @RegisterExtension
     @RegisterExtension
     static WireMockExtension wireMockServer
@@ -98,6 +98,9 @@ public class OrderControllerTest {
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)));
+
+        customLogger.log("Reducing Qty: {}", this.getClass().getName());
+
     }
 
     private void getPaymentDetails() throws IOException {
@@ -250,3 +253,11 @@ public class OrderControllerTest {
     }
 
 }
+
+class CustomLogger {
+    public void log(String message, Object... args) {
+        // Replace this with your preferred logging mechanism (e.g., SLF4J, log4j, System.out)
+        System.out.printf(message + "%n", args);
+    }
+}
+

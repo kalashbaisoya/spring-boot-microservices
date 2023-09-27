@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,15 +38,17 @@ import io.codejava.OrderService.repository.OrderRepository;
 @SpringBootTest
 public class OrderServiceImplTest {
 
+    private final CustomLogger customLogger = new CustomLogger();
+
 	@Mock
 	private OrderRepository orderRepository;
-	
+
 	@Mock
 	private ProductService productService;
-	
+
 	@Mock
 	private PaymentService paymentService;
-	
+
 	@Mock
 	private RestTemplate restTemplate;
 
@@ -63,6 +66,11 @@ public class OrderServiceImplTest {
         ReflectionTestUtils.setField(orderService,"paymentServiceUrl",paymentServiceUrl);
 
         ReflectionTestUtils.setField(orderService,"productServiceUrl",productServiceUrl);
+    }
+
+    @AfterEach
+    public void logTestDetails() {
+        customLogger.log("Test completed: {}", this.getClass().getName());
     }
 
     @DisplayName("Get Order - Success Scenario")
@@ -132,7 +140,7 @@ public class OrderServiceImplTest {
                 .thenReturn(new ResponseEntity<Void>(HttpStatus.OK));
         when(paymentService.doPayment(any(PaymentRequest.class)))
                 .thenReturn(new ResponseEntity<Long>(1L,HttpStatus.OK));
-        
+
         //here is the actual method that is being tested
         // here we are testing placeOrder() method from orderService
         long orderId = orderService.placeOrder(orderRequest);
@@ -213,4 +221,11 @@ public class OrderServiceImplTest {
                 .build();
     }
 
+}
+
+class CustomLogger {
+    public void log(String message, Object... args) {
+        // Replace this with your preferred logging mechanism (e.g., SLF4J, log4j, System.out)
+        System.out.printf(message + "%n", args);
+    }
 }
